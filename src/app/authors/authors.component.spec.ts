@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AuthorsComponent } from './authors.component';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { RouterTestingModule } from "@angular/router/testing";
+import { provideHttpClientTesting, HttpTestingController } from "@angular/common/http/testing";
 
 describe('AuthorsComponent', () => {
   let component: AuthorsComponent;
@@ -9,7 +10,8 @@ describe('AuthorsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AuthorsComponent, HttpClientTestingModule] // AuthorsComponent is standalone
+      imports: [RouterTestingModule, AuthorsComponent], // AuthorsComponent is standalone
+      providers: [provideHttpClientTesting()] // Provides HttpTestingController for HTTP mocks
     }).compileComponents();
 
     fixture = TestBed.createComponent(AuthorsComponent);
@@ -19,7 +21,7 @@ describe('AuthorsComponent', () => {
   });
 
   afterEach(() => {
-    httpTestingController.verify();
+    httpTestingController.verify(); // Verifies no outstanding requests are left
   });
 
   it('should create', () => {
@@ -30,6 +32,7 @@ describe('AuthorsComponent', () => {
     component.authorId = '1';
     component.fetchAuthor();
 
+    // Expect the HTTP request to be made with the correct URL
     const req = httpTestingController.expectOne('/api/authors/1');
     req.flush({ name: 'John Doe', books: ['Book 1', 'Book 2'] });
 
@@ -43,6 +46,7 @@ describe('AuthorsComponent', () => {
     component.authorId = '999';
     component.fetchAuthor();
 
+    // Expect the HTTP request to be made with the correct URL and simulate a 404 response
     const req = httpTestingController.expectOne('/api/authors/999');
     req.flush(null, { status: 404, statusText: 'Not Found' });
 
