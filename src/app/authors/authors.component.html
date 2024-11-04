@@ -1,1 +1,17 @@
-<p>authors works!</p>
+<div>
+    <form (ngSubmit)="fetchAuthor()">
+      <label for="authorId">Author ID:</label>
+      <input type="text" id="authorId" [(ngModel)]="authorId" name="authorId" required>
+      <button type="submit">Submit</button>
+    </form>
+  
+    <div *ngIf="author">
+      <p><strong>Name:</strong> {{ author.name }}</p>
+      <p><strong>Books:</strong> {{ author.books.join(', ') }}</p>
+    </div>
+    
+    <div *ngIf="errorMessage">
+      <p>{{ errorMessage }}</p>
+    </div>
+  </div>
+  
